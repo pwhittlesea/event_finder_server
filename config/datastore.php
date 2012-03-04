@@ -15,6 +15,11 @@ $config = array(
   'db_pwd' => 'db_pass',
   /* store */
   'store_name' => 'event_finder',
+  /* endpoint */
+  'endpoint_features' => array(
+    'select', 'construct', 'ask', 'describe',
+  ),
+  'endpoint_max_limit' => 250,
 );
 $store = ARC2::getStore($config);
 if (!$store->isSetUp()) {

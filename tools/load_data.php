@@ -5,9 +5,9 @@
  * Author: Phillip Whittlesea <pw.github@thega.me.uk>
  * Date: 04/03/2012
  */
-include_once("lib/arc/ARC2.php");
-include_once("lib/graphite/graphite/Graphite.php");
-include_once("config/datastore.php");
+include_once("../lib/arc/ARC2.php");
+include_once("../lib/graphite/graphite/Graphite.php");
+include_once("../config/datastore.php");
 
 // Read endpoint config from STDIN
 if (isset($argc) && $argc > 1) {
@@ -29,12 +29,12 @@ if (!isset($config['endpoints'])) {
 if (!isset($config['start'])) {
     $config['start'] = time();
 } else {
-    $config['start'] = strtotime($config['start']);
+    $config['start'] = strtotime($config['start'][0]);
 }
 if (!isset($config['end'])) {
     $config['end'] = time() + (60 * 60 * 24 * 2); // 48 hours later
 } else {
-    $config['end'] = strtotime($config['end']);
+    $config['end'] = strtotime($config['end'][0]);
 }
 
 
@@ -81,7 +81,7 @@ function fetch_triples($endpoint = null) {
     $add = "?query=".urlencode( $query )."&output=rdfxml&jsonp";
     
     // Import the data into the local store
-    $store->query('LOAD <'. $endpoint . $add .'>');
+    $store->query('LOAD <'. $endpoint . $add .'> INTO <'. $endpoint .'>');
     
     // Has anything gone wrong
     if ($errs = $store->getErrors()) {
