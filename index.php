@@ -25,8 +25,8 @@ SELECT * WHERE {
   ?a time:end ?end .
   ?a time:start ?start .
   FILTER ( 
-    xsd:dateTime(?end) > xsd:dateTime("'.date(DATE_W3C,$time).'") &&
-    xsd:dateTime(?end) < xsd:dateTime("'.date(DATE_W3C,$timeEND).'") 
+    xsd:dateTime(?end) > xsd:dateTime("'.date(DATE_W3C,$time_start).'") &&
+    xsd:dateTime(?end) < xsd:dateTime("'.date(DATE_W3C,$time_end).'") 
   )
 }';
 // Iterator and output
