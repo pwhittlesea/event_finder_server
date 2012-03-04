@@ -13,18 +13,28 @@ include_once("config/datastore.php");
 if (isset($argc) && $argc > 1) {
     $config = parse_args($argv);
 }
+
+if (@$config["help"]) {
+    print_help();
+    exit(1);
+}
+
 // Ensure there are endpoints
 if (!isset($config['endpoints'])) {
     echo "No Endpoints Specified: Exiting\n";
-    exit();
+    exit(1);
 }
 
 // Ensure times are set
-if (!isset($config['time_start'])) {
-    $config['time_start'] = time();
+if (!isset($config['start'])) {
+    $config['start'] = time();
+} else {
+    $config['start'] = strtotime($config['start']);
 }
-if (!isset($config['time_end'])) {
-    $config['time_end'] = time() + (60 * 60 * 24 * 2); // 48 hours later
+if (!isset($config['end'])) {
+    $config['end'] = time() + (60 * 60 * 24 * 2); // 48 hours later
+} else {
+    $config['end'] = strtotime($config['end']);
 }
 
 
@@ -62,8 +72,8 @@ function fetch_triples($endpoint = null) {
       ?timeOb time:end ?end .
       ?timeOb time:start ?start .
       FILTER ( 
-        xsd:dateTime(?end) > xsd:dateTime("'.date(DATE_W3C,$config['time_start']).'") &&
-        xsd:dateTime(?end) < xsd:dateTime("'.date(DATE_W3C,$config['time_end']).'") 
+        xsd:dateTime(?end) > xsd:dateTime("'.date(DATE_W3C,$config['start']).'") &&
+        xsd:dateTime(?end) < xsd:dateTime("'.date(DATE_W3C,$config['end']).'") 
       )
     }';
     
@@ -96,4 +106,25 @@ function parse_args($args) {
         }
     }
     return $config;
+}
+
+function print_help() {
+    echo "usage: command [options]\n";
+    echo "\n";
+    echo "Options\n";
+    echo "=======\n";
+    echo "\n";
+    echo "  --endpoints end1,end2,end3\n";
+    echo "     list of endpoints to scrape\n";
+    echo "\n";
+    echo "  --start DD-MM-YYYY\n";
+    echo "    OR\n";
+    echo "  --start MM/DD/YYYY\n";
+    echo "     start date to limit results\n";
+    echo "\n";
+    echo "  --end DD-MM-YYYY\n";
+    echo "    OR\n";
+    echo "  --end MM/DD/YYYY\n";
+    echo "     end date to limit results\n";
+    echo "\n";
 }
