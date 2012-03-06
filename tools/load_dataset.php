@@ -15,8 +15,15 @@ if (!isset($config['dataset'])) {
     $config['dataset'] = $config['dataset'][0];
 }
 
+// Allow graph to be overrriden
+if (!isset($config['graph'])) {
+    $config['graph'] = $config['dataset'][0];
+} else {
+    $config['graph'] = $config['graph'][0];
+}
+
 // Import the data into the local store
-$store->query("LOAD <".$config['dataset']."> INTO <".$config['dataset'].">");
+$store->query("LOAD <".$config['dataset']."> INTO <".$config['graph'].">");
     
 // Has anything gone wrong
 if ($errs = $store->getErrors()) {
@@ -35,5 +42,8 @@ function print_help() {
     echo "\n";
     echo "  --dataset data1\n";
     echo "     list of dataset to scrape\n";
+    echo "\n";
+    echo "  --graph graph1\n";
+    echo "     override the default graph\n";
     echo "\n";
 }

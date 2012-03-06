@@ -33,19 +33,37 @@ $placeQuery = "
   }
 ";
 
+$timeQuery = "
+  PREFIX event: <http://purl.org/NET/c4dm/event.owl#>
+  SELECT DISTINCT ?t WHERE {
+    GRAPH <".$config['graph']."> { 
+      ?s a event:Event ;
+         event:time ?t .
+    }
+  }
+";
+
 // Fetch all matching rows from the store
 if ($rows = $store->query($placeQuery, 'rows')) {
     foreach ($rows as $row) {
-        // Include place is graph
+        // Include place in graph
         $graph->load( $row['p'] );
     }
-    
-    // Once complete insert into the local store
-    $arcTriples = $graph->toArcTriples();
-    $store->insert($arcTriples,$config['graph'],0);
-    unset($graph);
 }
 
+// Fetch all matching rows from the store
+if ($rows = $store->query($timeQuery, 'rows')) {
+    foreach ($rows as $row) {
+        // Include time in graph
+        $graph->load( $row['t'] );
+    }
+}
+
+// Once complete insert into the local store
+$arcTriples = $graph->toArcTriples();
+$store->insert($arcTriples,$config['graph'],0);
+unset($graph);
+    
 function print_help() {
     echo "usage: command [options]\n";
     echo "\n";
