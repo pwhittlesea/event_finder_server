@@ -36,7 +36,7 @@ if ($errs = $store->getErrors()) {
         echo "Error: ${err}\n";
     }
 } else {
-    echo "Dataset: ${uri} loaded\n";
+    echo "Dataset: ".$config['dataset']." loaded\n";
 }
 
 function parse_args($args) {
