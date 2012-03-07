@@ -77,6 +77,8 @@ class EF_LoadExtras extends EF_Common {
             foreach ($errs as $err) {
                 echo "Error: ${err}\n";
             }
+            echo "Graph: ${dataset} failed\n";
+            $this->store->resetErrors();
             return 0;
         } else {
             echo "Graph: ${dataset} updated\n";  

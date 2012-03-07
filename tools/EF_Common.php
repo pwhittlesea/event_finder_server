@@ -18,8 +18,8 @@ class EF_Common {
 
     // private constructor function 
     protected function __construct() {
-        global $config;
-        $this->config = $config;
+        global $store;
+        $this->store = $store;
     } 
 
     // getInstance method 

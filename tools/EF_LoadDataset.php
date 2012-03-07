@@ -45,9 +45,11 @@ class EF_LoadDataset extends EF_Common {
             foreach ($errs as $err) {
                 echo "Error: ${err}\n";
             }
+            echo "Dataset: ${dataset} failed\n";
+            $this->store->resetErrors();
             return 0;
         } else {
-            echo "Dataset: ".$config['dataset']." loaded\n";  
+            echo "Dataset: ${dataset} loaded\n";  
             return 1;
         }
     }

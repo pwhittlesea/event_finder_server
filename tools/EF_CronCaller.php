@@ -30,18 +30,18 @@ $datasets = array(
 
 // Read endpoint config from STDIN
 if (isset($argc) && $argc > 1) {
-    $config = parse_args($argv);
+    $conf = parse_args($argv);
 }
 
-if ( @$config['datasets'] ) {
+if ( @$conf['datasets'] ) {
     echo "Updating Datasets\n";
     $handlerDataset = EF_LoadDataset::getInstance();
     foreach ( $datasets as $set ) {
-        $handlerDataset->datasetImport($set['d'], $set['g']);
+        $handlerDataset->datasetImport($set['d'], @$set['g'] ? $set['g'] : null);
     }
 }
 
-if ( @$config['extras'] ) {
+if ( @$conf['extras'] ) {
     echo "Updating Extras\n";
     $handlerExtras = EF_LoadExtras::getInstance();
     foreach ( $datasets as $set ) {
