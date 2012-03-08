@@ -45,7 +45,7 @@ if ( @$conf['extras'] ) {
     echo "Updating Extras\n";
     $handlerExtras = EF_LoadExtras::getInstance();
     foreach ( $datasets as $set ) {
-        $handlerExtras->extrasCollection($set['d']);
+        $handlerExtras->extrasCollection(@$set['g'] ? $set['g'] : $set['d']);
     }
 }
 
