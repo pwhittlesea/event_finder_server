@@ -13,8 +13,8 @@ include_once(dirname ( __FILE__ ) . "/../config/datastore.php");
 // Fake time globals
 $time_start = mktime(0,0,0,9,2,2011);
 $time_end   = mktime(0,0,0,9,4,2011);
-$gps_x = 50.9358682;
-$gps_y = -1.3988324;
+$gps_lat = 50.9358682;
+$gps_lng = -1.3988324;
 
 // TODO Replace with the OO method for requesting graphs
 $q = '
@@ -39,9 +39,21 @@ $events = array();
 if ($rows = $store->query($q, 'rows')) {
     foreach ($rows as $row) {
         // do check for gps
-        // todo calculate actual distance and then order events based on distance from point
-        $p = 0.0001; // precision
-        if ( ( abs($row['long']-$gps_y) < $p ) && ( abs($row['lat']-$gps_x) < $p ) ) {
+		
+        $limit = 10; //get events within this limit (miles)
+		
+    	$deg_per_rad = 57.29578;  // number of degrees/radian (for conversion)
+		$distance = (3958 * pi() * sqrt(
+						($gps_lat - $row['lat'])
+						* ($gps_lat - $row['lat'])
+						+ cos($gps_lat / $deg_per_rad)
+						* cos($row['lat'] / $deg_per_rad)
+						* ($gps_lng - $row['long'])
+						* ($gps_lng - $row['long'])
+					) / 180); //calculation found on the internet from stackoverflow
+		
+		//if the event is within the limit, then add to array.
+        if ($distance <= $limit) {  
             $array = array(
                 'url'   => $row['url'],
                 'long'  => $row['long'],
