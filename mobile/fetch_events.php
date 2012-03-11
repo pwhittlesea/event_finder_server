@@ -61,7 +61,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT DISTINCT ?lat ?long ?url ?label ?start ?end WHERE {
   ?s geo:lat ?lat ; geo:long ?long .
-  ?url ev:place ?s ; rdfs:label ?label ; ev:time ?timeOb .
+  ?url ev:place ?s ; rdfs:label ?label ; <http://purl.org/dc/terms/description> ?desc ; ev:time ?timeOb .
   ?timeOb time:end ?end ; time:start ?start .
   FILTER (
     xsd:dateTime(?start) > xsd:dateTime("'.date(DATE_W3C,$time_start).'") &&
@@ -94,6 +94,7 @@ if ($rows = $store->query($q, 'rows')) {
                 'long'  => $row['long'],
                 'lat'   => $row['lat'],
                 'label' => $row['label'],
+                'desc'  => $row['desc'],
                 'start' => date(DATE_ATOM, strtotime($row['start'])),
                 'end'   => date(DATE_ATOM, strtotime($row['end'])),
             );
