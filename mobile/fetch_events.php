@@ -1,9 +1,10 @@
 <?php
 /*
- * This script will output events based upon GPS 
+ * This script will output events based upon GPS
  * coordinates and time
  *
  * Author: Phillip Whittlesea <pw.github@thega.me.uk>
+ * Author: Adam Perryman
  * Date: 04/03/2012
  */
 include_once(dirname ( __FILE__ ) . "/../lib/arc/ARC2.php");
@@ -13,8 +14,42 @@ include_once(dirname ( __FILE__ ) . "/../config/datastore.php");
 // Fake time globals
 $time_start = mktime(0,0,0,9,2,2011);
 $time_end   = mktime(0,0,0,9,4,2011);
-$gps_lat = 50.9358682;
-$gps_lng = -1.3988324;
+
+$req = array_merge($_GET, $_POST);
+
+if ( !isset($req['req']) ) {
+    exit(1);
+} else {
+    $request = json_decode($req['req'],true);
+}
+
+// Unused§
+// if ( isset($request['id']) ) {
+//     $id = $request['id'];
+// }
+
+if ( isset($request['geo']['lat']) ) {
+
+    // Get lat
+    if ( isset($request['geo']['lat']) ) {
+        $gps_lat = $request['geo']['lat'];
+    } else {
+        $gps_lat = 50.9358682;
+    }
+
+    // Get long
+    if ( isset($request['geo']['long']) ) {
+        $gps_lng = $request['geo']['long'];
+    } else {
+        $gps_lng = -1.3988324;
+    }
+
+} else {
+    exit(1);
+}
+
+// Unused
+// $graphs = $request['graphs'];
 
 // TODO Replace with the OO method for requesting graphs
 $q = '
@@ -28,9 +63,9 @@ SELECT DISTINCT ?lat ?long ?url ?label ?start ?end WHERE {
   ?s geo:lat ?lat ; geo:long ?long .
   ?url ev:place ?s ; rdfs:label ?label ; ev:time ?timeOb .
   ?timeOb time:end ?end ; time:start ?start .
-  FILTER ( 
+  FILTER (
     xsd:dateTime(?start) > xsd:dateTime("'.date(DATE_W3C,$time_start).'") &&
-    xsd:dateTime(?end) < xsd:dateTime("'.date(DATE_W3C,$time_end).'") 
+    xsd:dateTime(?end) < xsd:dateTime("'.date(DATE_W3C,$time_end).'")
   )
 }';
 // Output
@@ -39,11 +74,11 @@ $events = array();
 if ($rows = $store->query($q, 'rows')) {
     foreach ($rows as $row) {
         // do check for gps
-		
+
         $limit = 10; //get events within this limit (miles)
-		
-    	$deg_per_rad = 57.29578;  // number of degrees/radian (for conversion)
-		$distance = (3958 * pi() * sqrt(
+
+        $deg_per_rad = 57.29578;  // number of degrees/radian (for conversion)
+        $distance = (3958 * pi() * sqrt(
 						($gps_lat - $row['lat'])
 						* ($gps_lat - $row['lat'])
 						+ cos($gps_lat / $deg_per_rad)
@@ -51,9 +86,9 @@ if ($rows = $store->query($q, 'rows')) {
 						* ($gps_lng - $row['long'])
 						* ($gps_lng - $row['long'])
 					) / 180); //calculation found on the internet from stackoverflow
-		
+
 		//if the event is within the limit, then add to array.
-        if ($distance <= $limit) {  
+        if ($distance <= $limit) {
             $array = array(
                 'url'   => $row['url'],
                 'long'  => $row['long'],
