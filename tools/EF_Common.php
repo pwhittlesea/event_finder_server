@@ -6,27 +6,27 @@
  * Date: 06/03/2012
  */
 include_once(dirname ( __FILE__ ) . "/../lib/arc/ARC2.php");
-include_once(dirname ( __FILE__ ) . "/../lib/graphite/graphite/Graphite.php");
+include_once(dirname ( __FILE__ ) . "/../lib/graphite/Graphite.php");
 include_once(dirname ( __FILE__ ) . "/../config/datastore.php");
 
-class EF_Common { 
+class EF_Common {
 
-    // singleton instance   
-    private static $instance; 
+    // singleton instance
+    private static $instance;
 
     protected static $config;
 
-    // private constructor function 
+    // private constructor function
     protected function __construct() {
         global $store;
         $this->store = $store;
-    } 
+    }
 
-    // getInstance method 
-    public static function getInstance() { 
-        if(!self::$instance) { 
-            self::$instance = new self(); 
-        } 
-        return self::$instance; 
-    } 
+    // getInstance method
+    public static function getInstance() {
+        if(!self::$instance) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 }
