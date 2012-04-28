@@ -59,9 +59,9 @@ PREFIX ev: <http://purl.org/NET/c4dm/event.owl#>
 PREFIX time: <http://purl.org/NET/c4dm/timeline.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-SELECT DISTINCT ?lat ?long ?url ?label ?start ?end WHERE {
-  ?s geo:lat ?lat ; geo:long ?long .
-  ?url ev:place ?s ; rdfs:label ?label ; <http://purl.org/dc/terms/description> ?desc ; ev:time ?timeOb .
+SELECT DISTINCT ?lat ?long ?place WHERE {
+  ?place geo:lat ?lat ; geo:long ?long .
+  ?url ev:place ?place ; ev:time ?timeOb .
   ?timeOb time:end ?end ; time:start ?start .
   FILTER (
     xsd:dateTime(?start) > xsd:dateTime("'.date(DATE_W3C,$time_start).'") &&
@@ -90,13 +90,9 @@ if ($rows = $store->query($q, 'rows')) {
         //if the event is within the limit, then add to array.
         if ($distance <= $limit) {
             $array = array(
-                'url'   => $row['url'],
+                'place' => $row['place'],
                 'long'  => $row['long'],
                 'lat'   => $row['lat'],
-                'label' => $row['label'],
-                'desc'  => $row['desc'],
-                'start' => date(DATE_ATOM, strtotime($row['start'])),
-                'end'   => date(DATE_ATOM, strtotime($row['end'])),
             );
            array_push($events, $array);
         }
