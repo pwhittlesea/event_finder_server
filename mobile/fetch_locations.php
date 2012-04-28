@@ -1,11 +1,11 @@
 <?php
 /*
- * This script will output events based upon GPS
- * coordinates and time
+ * This script will output locations for evernts
+ * based upon GPS coordinates and time
  *
  * Author: Phillip Whittlesea <pw.github@thega.me.uk>
  * Author: Adam Perryman
- * Date: 04/03/2012
+ * Date: 28/04/2012
  */
 include_once(dirname ( __FILE__ ) . "/../lib/arc/ARC2.php");
 include_once(dirname ( __FILE__ ) . "/../lib/graphite/graphite/Graphite.php");
