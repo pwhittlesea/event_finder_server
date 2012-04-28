@@ -28,7 +28,7 @@ if ( !isset($req['req']) ) {
 //     $id = $request['id'];
 // }
 
-if ( isset($request['geo']['lat']) ) {
+if ( isset($request['geo']) ) {
 
     // Get lat
     if ( isset($request['geo']['lat']) ) {
@@ -59,7 +59,7 @@ PREFIX ev: <http://purl.org/NET/c4dm/event.owl#>
 PREFIX time: <http://purl.org/NET/c4dm/timeline.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-SELECT DISTINCT ?lat ?long ?url ?label ?start ?end WHERE {
+SELECT DISTINCT ?lat ?long ?url ?label ?desc ?start ?end WHERE {
   ?s geo:lat ?lat ; geo:long ?long .
   ?url ev:place ?s ; rdfs:label ?label ; <http://purl.org/dc/terms/description> ?desc ; ev:time ?timeOb .
   ?timeOb time:end ?end ; time:start ?start .

@@ -28,7 +28,7 @@ if ( !isset($req['req']) ) {
 //     $id = $request['id'];
 // }
 
-if ( isset($request['geo']['lat']) ) {
+if ( isset($request['geo']) ) {
 
     // Get lat
     if ( isset($request['geo']['lat']) ) {
