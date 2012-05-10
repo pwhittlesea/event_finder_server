@@ -51,14 +51,15 @@ if ( isset($request['geo']) ) {
 // Unused
 // $graphs = $request['graphs'];
 
-// TODO Replace with the OO method for requesting graphs
-$q = '
+$queryPrefix = '
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ev: <http://purl.org/NET/c4dm/event.owl#>
 PREFIX time: <http://purl.org/NET/c4dm/timeline.owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+';
 
+$q = '
 SELECT DISTINCT ?place ?lat ?long ?label WHERE {
   ?place geo:lat ?lat ; geo:long ?long ; rdfs:label ?label .
   ?url ev:place ?place ; ev:time ?timeOb .
@@ -68,21 +69,11 @@ SELECT DISTINCT ?place ?lat ?long ?label WHERE {
     xsd:dateTime(?end) < xsd:dateTime("'.date(DATE_W3C,$time_end).'")
   )
 }';
-$n = '
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX ev: <http://purl.org/NET/c4dm/event.owl#>
-PREFIX time: <http://purl.org/NET/c4dm/timeline.owl#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-
-SELECT COUNT(?url) as number WHERE {
-  ?url ev:place <http://id.southampton.ac.uk/building/46> .
-}';
 
 // Output
 $events = array();
 
-if ($rows = $store->query($q, 'rows')) {
+if ($rows = $store->query($queryPrefix.$q, 'rows')) {
     foreach ($rows as $row) {
         // do check for gps
 
@@ -101,8 +92,9 @@ if ($rows = $store->query($q, 'rows')) {
         //if the event is within the limit, then add to array.
         if ($distance <= $limit) {
 
+            $n = 'SELECT COUNT(?url) as number WHERE { ?url ev:place <'.$row['place'].'> . }';
             // Check for number of events at the location
-            if ($rows = $store->query($n, 'rows')) {
+            if ($rows = $store->query($queryPrefix.$n, 'rows')) {
                 $numberOfEvents = $rows[0]['number'];
             } else {
                 $numberOfEvents = 0;
