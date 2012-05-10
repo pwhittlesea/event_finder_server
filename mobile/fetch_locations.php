@@ -68,6 +68,17 @@ SELECT DISTINCT ?place ?lat ?long ?label WHERE {
     xsd:dateTime(?end) < xsd:dateTime("'.date(DATE_W3C,$time_end).'")
   )
 }';
+$n = '
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ev: <http://purl.org/NET/c4dm/event.owl#>
+PREFIX time: <http://purl.org/NET/c4dm/timeline.owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT COUNT(?url) as number WHERE {
+  ?url ev:place <http://id.southampton.ac.uk/building/46> .
+}';
+
 // Output
 $events = array();
 
@@ -89,11 +100,19 @@ if ($rows = $store->query($q, 'rows')) {
 
         //if the event is within the limit, then add to array.
         if ($distance <= $limit) {
+
+            // Check for number of events at the location
+            if ($rows = $store->query($n, 'rows')) {
+                $numberOfEvents = $rows[0]['number'];
+            } else {
+                $numberOfEvents = 0;
+            }
             $array = array(
                 'place' => $row['place'],
                 'label' => $row['label'],
                 'long'  => $row['long'],
                 'lat'   => $row['lat'],
+                'num'   => $numberOfEvents,
             );
            array_push($events, $array);
         }
